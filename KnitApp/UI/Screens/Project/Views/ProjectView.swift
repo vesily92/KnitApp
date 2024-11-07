@@ -32,7 +32,7 @@ struct ProjectView: View {
                             }
                             .tint(.red)
                             Button {
-                                // TODO
+                                coordinator.presentSheet(.editProjectView(project))
                             } label: {
                                 Image(systemName: "gearshape.fill")
                             }
@@ -56,7 +56,7 @@ struct ProjectView: View {
         .navigationTitle(project.name)
         .toolbar {
             Button("Edit") {
-                
+                coordinator.presentSheet(.editProjectView(project))
             }
         }
     }

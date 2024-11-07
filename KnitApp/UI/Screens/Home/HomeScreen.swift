@@ -77,7 +77,7 @@ struct HomeScreen: View {
                             .padding(.leading)
                     }
                     Button {
-                        // TODO
+                        coordinator.presentSheet(.newProjectView)
                     } label: {
                         HStack {
                             Image(systemName: "plus")
@@ -99,7 +99,7 @@ struct HomeScreen: View {
             .toolbar {
                 ToolbarItem {
                     Button {
-                        // TODO
+                        coordinator.presentSheet(.newProjectView)
                     } label: {
                         Image(systemName: "plus")
                             .foregroundStyle(.blue)

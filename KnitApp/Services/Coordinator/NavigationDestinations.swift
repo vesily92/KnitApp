@@ -35,11 +35,17 @@ extension ScreenDestination: Hashable {
 enum SheetDestination: Identifiable {
     
     case onboardingView
+    case newProjectView
+    case editProjectView(ProjectModel)
     
     var id: String {
         switch self {
         case .onboardingView:
             return "0"
+        case .newProjectView:
+            return "1"
+        case .editProjectView(let project):
+            return "2. \(project.id)"
         }
     }
 }
@@ -48,6 +54,9 @@ extension SheetDestination: Hashable {
     func hash(into hasher: inout Hasher) {
         switch self {
         case .onboardingView: break
+        case .newProjectView: break
+        case .editProjectView(let project):
+            hasher.combine(project)
         }
     }
     

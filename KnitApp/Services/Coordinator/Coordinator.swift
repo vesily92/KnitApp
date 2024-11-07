@@ -33,6 +33,10 @@ final class Coordinator {
         switch destination {
         case .onboardingView:
             WelcomeScreen()
+        case .newProjectView:
+            NewProjectScreen()
+        case .editProjectView(let project):
+            EditProjectScreen(project: project)
         }
     }
     
