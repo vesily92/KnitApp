@@ -36,11 +36,17 @@ struct SetupProjectView: View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    // TODO -> edit counter
+                    coordinator.presentSheet(.editCounterView(
+                        counter: $counter,
+                        project: $project,
+                        origin: .projectView
+                    ))
                 }
             }
             Button {
-                // TODO -> new counter
+                coordinator.presentSheet(.newCounterView(
+                    project: $project
+                ))
             } label: {
                 HStack {
                     Image(systemName: "plus")
