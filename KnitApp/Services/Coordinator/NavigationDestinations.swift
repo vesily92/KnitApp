@@ -11,6 +11,7 @@ enum ScreenDestination {
     
     case homeView(ProjectManager)
     case projectView(project: Binding<ProjectModel>)
+    case counterView(counter: Binding<Counter>, project: Binding<ProjectModel>)
 }
 
 extension ScreenDestination: Hashable {
@@ -20,6 +21,9 @@ extension ScreenDestination: Hashable {
             hasher.combine(viewModel)
         case .projectView(let projectModel):
             hasher.combine(projectModel.wrappedValue)
+        case .counterView(let counter, let project):
+            hasher.combine(counter.wrappedValue)
+            hasher.combine(project.wrappedValue)
         }
     }
     

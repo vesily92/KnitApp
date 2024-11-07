@@ -23,6 +23,8 @@ final class Coordinator {
             HomeScreen(viewModel: model)
         case .projectView(let project):
             ProjectScreen(project: project)
+        case .counterView(let counter, let project):
+            CounterScreen(counter: counter, project: project)
         }
     }
     

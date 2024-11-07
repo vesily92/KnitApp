@@ -32,7 +32,7 @@ struct ProjectView: View {
                             }
                             .tint(.red)
                             Button {
-                                
+                                // TODO
                             } label: {
                                 Image(systemName: "gearshape.fill")
                             }
@@ -40,7 +40,7 @@ struct ProjectView: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            
+                            coordinator.push(.counterView(counter: $counter, project: $project))
                         }
                 }
             }
