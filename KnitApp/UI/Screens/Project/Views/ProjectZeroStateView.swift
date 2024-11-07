@@ -23,7 +23,7 @@ struct ProjectZeroStateView: View {
             }
             .padding(.horizontal, 60)
             Button {
-                // TODO -> new counter
+                coordinator.presentSheet(.newCounterView(project: $project))
             } label: {
                 HStack {
                     Image(systemName: "plus")

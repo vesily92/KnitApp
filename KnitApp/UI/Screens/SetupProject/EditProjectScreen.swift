@@ -17,7 +17,7 @@ struct EditProjectScreen: View {
     
     @State private var editableProject: ProjectModel
     @State private var canSubmit: Bool = true
-    @State private var isDeleting: Bool = false
+    @State private var showAlert: Bool = false
     
     private let project: ProjectModel
     
@@ -27,9 +27,9 @@ struct EditProjectScreen: View {
                 SetupProjectView(project: $editableProject, canSubmit: $canSubmit)
                     .withDeleteButton {
                         Button("Delete project", role: .destructive) {
-                            isDeleting.toggle()
+                            showAlert.toggle()
                         }
-                        .alert("Are you sure you want to delete project?", isPresented: $isDeleting) {
+                        .alert("Are you sure you want to delete project?", isPresented: $showAlert) {
                             Button("Delete", role: .destructive) {
                                 viewModel.deleteProject(project)
                                 router.popToRoot()

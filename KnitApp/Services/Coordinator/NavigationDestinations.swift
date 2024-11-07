@@ -37,6 +37,8 @@ enum SheetDestination: Identifiable {
     case onboardingView
     case newProjectView
     case editProjectView(ProjectModel)
+    case newCounterView(project: Binding<ProjectModel>)
+    case editCounterView(counter: Binding<Counter>, project: Binding<ProjectModel>, origin: EditCounterScreen.OriginView)
     
     var id: String {
         switch self {
@@ -46,6 +48,10 @@ enum SheetDestination: Identifiable {
             return "1"
         case .editProjectView(let project):
             return "2. \(project.id)"
+        case .newCounterView(let project):
+            return "3. \(project.id)"
+        case .editCounterView(let counter, let project, _):
+            return "4. \(counter.id)\(project.id)"
         }
     }
 }
@@ -57,6 +63,12 @@ extension SheetDestination: Hashable {
         case .newProjectView: break
         case .editProjectView(let project):
             hasher.combine(project)
+        case .newCounterView(let binding):
+            hasher.combine(binding.wrappedValue)
+        case .editCounterView(let counter, let project, let origin):
+            hasher.combine(counter.wrappedValue)
+            hasher.combine(project.wrappedValue)
+            hasher.combine(origin)
         }
     }
     

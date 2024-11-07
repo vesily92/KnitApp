@@ -37,6 +37,10 @@ final class Coordinator {
             NewProjectScreen()
         case .editProjectView(let project):
             EditProjectScreen(project: project)
+        case .newCounterView(let project):
+            NewCounterScreen(project: project)
+        case .editCounterView(let counter, let project, let origin):
+            EditCounterScreen(counter: counter, project: project, origin: origin)
         }
     }
     

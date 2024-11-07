@@ -53,7 +53,11 @@ struct CounterScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button("Edit") {
-               // TODO
+                coordinator.presentSheet(.editCounterView(
+                    counter: $counter,
+                    project: $project,
+                    origin: .counterView
+                ))
             }
         }
     }
