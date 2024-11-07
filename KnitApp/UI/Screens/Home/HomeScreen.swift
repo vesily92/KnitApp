@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeScreen: View {
     
-    @Environment(Coordinator.self) private var router
+    @Environment(Coordinator.self) private var coordinator
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var viewModel: ProjectManager
@@ -71,13 +71,13 @@ struct HomeScreen: View {
                         ProjectPreviewCell($project)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                
+                                coordinator.push(.projectView(project: $project))
                             }
                         Divider()
                             .padding(.leading)
                     }
                     Button {
-                        
+                        // TODO
                     } label: {
                         HStack {
                             Image(systemName: "plus")
@@ -99,7 +99,7 @@ struct HomeScreen: View {
             .toolbar {
                 ToolbarItem {
                     Button {
-                        
+                        // TODO
                     } label: {
                         Image(systemName: "plus")
                             .foregroundStyle(.blue)

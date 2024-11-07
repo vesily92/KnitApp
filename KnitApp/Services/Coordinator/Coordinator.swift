@@ -21,6 +21,8 @@ final class Coordinator {
         switch destination {
         case .homeView(let model):
             HomeScreen(viewModel: model)
+        case .projectView(let project):
+            ProjectScreen(project: project)
         }
     }
     

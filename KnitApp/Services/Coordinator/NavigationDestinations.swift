@@ -10,6 +10,7 @@ import SwiftUI
 enum ScreenDestination {
     
     case homeView(ProjectManager)
+    case projectView(project: Binding<ProjectModel>)
 }
 
 extension ScreenDestination: Hashable {
@@ -17,7 +18,13 @@ extension ScreenDestination: Hashable {
         switch self {
         case .homeView(let viewModel):
             hasher.combine(viewModel)
+        case .projectView(let projectModel):
+            hasher.combine(projectModel.wrappedValue)
         }
+    }
+    
+    static func == (lhs: ScreenDestination, rhs: ScreenDestination) -> Bool {
+        return lhs.hashValue == rhs.hashValue
     }
 }
 
