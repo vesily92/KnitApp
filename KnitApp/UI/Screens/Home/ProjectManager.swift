@@ -10,11 +10,14 @@ import Foundation
 @Observable
 final class ProjectManager: ViewModel {
     
-    var firstLaunch: Bool = true
     
     var projects: [ProjectModel] = []
     var filteringItems: [FilterItem] = []
-    
+    var appliedFilter: FilterOption = .all 
+    var searchText = ""
+    var showBanner = true
+    var firstLaunch: Bool = true
+        
     private let projectProvider: ProjectProvider
     
     init(projectProvider: ProjectProvider) {
@@ -26,7 +29,28 @@ final class ProjectManager: ViewModel {
         }
     }
     
-    func updateFilteringItems(with appliedFilter: FilterOption) {
+    func filterProjects() -> [ProjectModel] {
+        var filteredProjects: [ProjectModel] = []
+        
+        switch appliedFilter {
+        case .all:
+            filteredProjects = projects.sorted { lhs, rhs in
+                !lhs.isFinished && rhs.isFinished
+            }
+        case .active:
+            filteredProjects = projects.filter { project in
+                project.isFinished == false
+            }
+        case .finished:
+            filteredProjects = projects.filter { project in
+                project.isFinished == true
+            }
+        }
+        
+        return search(in: filteredProjects)
+    }
+    
+    func updateFilteringItems() {
         filteringItems = prepareFilteringItems(appliedFilter)
     }
     
@@ -43,6 +67,14 @@ final class ProjectManager: ViewModel {
     func deleteProject(_ project: ProjectModel) {
         if let index = self.projects.firstIndex(where: {$0.id == project.id }) {
             projects.remove(at: index)
+        }
+    }
+    
+    private func search(in projects: [ProjectModel]) -> [ProjectModel] {
+        if searchText.isEmpty {
+            return projects
+        } else {
+            return projects.filter { $0.name.contains(searchText) }
         }
     }
     

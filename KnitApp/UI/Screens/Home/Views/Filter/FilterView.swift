@@ -9,7 +9,7 @@ import SwiftUI
 
 struct FilterView: View {
     
-    @Binding var currentFilter: FilterOption
+    @Binding var appliedFilter: FilterOption
     @Binding var items: [FilterItem]
     
     var body: some View {
@@ -20,7 +20,7 @@ struct FilterView: View {
                         HStack {
                             Text(option.option.rawValue)
                                 .foregroundStyle(
-                                    option.option == currentFilter
+                                    option.option == appliedFilter
                                     ? Color.accentColor
                                     : Color.primary
                                 )
@@ -34,9 +34,7 @@ struct FilterView: View {
                     .tint(.clear)
                     .onChange(of: option, initial: option.isPressed) {
                         if option.isPressed {
-                            withAnimation {
-                                self.currentFilter = option.option
-                            }
+                            self.appliedFilter = option.option
                             self.items = self.items.map {
                                 var item = $0
                                 item.isPressed = $0.id == option.id
@@ -54,7 +52,7 @@ struct FilterView: View {
     }
     
     init(currentFilter: Binding<FilterOption>, items: Binding<[FilterItem]>) {
-        self._currentFilter = currentFilter
+        self._appliedFilter = currentFilter
         self._items = items
     }
 }

@@ -12,62 +12,29 @@ struct HomeScreen: View {
     @Environment(Coordinator.self) private var coordinator
     @Environment(\.colorScheme) private var colorScheme
     
-    @State private var viewModel: ProjectManager
-    @State private var filter: FilterOption = .all
-    @State private var searchText = ""
-    @State private var isPresentingBanner = true
-    
-    private var projects: [Binding<ProjectModel>] {
-        let bindingProjects = $viewModel.projects.map { $project in
-            return $project
-        }
-        var filteredProjects: [Binding<ProjectModel>] = []
-        
-        switch filter {
-        case .all:
-            filteredProjects = bindingProjects.sorted { lhs, rhs in
-                !lhs.wrappedValue.isFinished && rhs.wrappedValue.isFinished
-            }
-        case .active:
-            filteredProjects = bindingProjects.filter { project in
-                project.wrappedValue.isFinished == false
-            }
-        case .finished:
-            filteredProjects = bindingProjects.filter { project in
-                project.wrappedValue.isFinished == true
-            }
-        }
-        return filteredProjects
-    }
-    
-    private var searchResults: [Binding<ProjectModel>] {
-        if searchText.isEmpty {
-            return projects
-        } else {
-            return projects.filter { $0.wrappedValue.name.contains(searchText) }
-        }
-    }
+    @State private var viewModel: ProjectManager    
+    @State private var filteredProjects: [ProjectModel] = []
     
     var body: some View {
         ZStack {
             Color(UIColor.systemGroupedBackground)
                 .ignoresSafeArea()
             ScrollView {
-                if isPresentingBanner {
-                    GetAppleWatchAppView(isPresented: $isPresentingBanner)
+                if viewModel.showBanner {
+                    GetAppleWatchAppView(isPresented: $viewModel.showBanner)
                         .padding(.horizontal)
                         .padding(.vertical, 4)
                 }
                 ScrollView(.horizontal) {
                     FilterView(
-                        currentFilter: $filter,
+                        currentFilter: $viewModel.appliedFilter,
                         items: $viewModel.filteringItems
                     )
                     .padding(.horizontal)
                     .padding(.vertical, 4)
                 }
                 LazyVStack(spacing: 2) {
-                    ForEach(searchResults) { $project in
+                    ForEach($filteredProjects) { $project in
                         ProjectPreviewCell($project)
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -95,7 +62,7 @@ struct HomeScreen: View {
                 .padding(.vertical, 4)
             }
             .navigationTitle("My projects")
-            .searchable(text: $searchText)
+            .searchable(text: $viewModel.searchText)
             .toolbar {
                 ToolbarItem {
                     Button {
@@ -107,7 +74,25 @@ struct HomeScreen: View {
                 }
             }
             .onAppear {
-                viewModel.updateFilteringItems(with: filter)
+                filteredProjects = viewModel.filterProjects()
+                viewModel.updateFilteringItems()
+            }
+            .onChange(of: viewModel.appliedFilter) {
+                withAnimation {
+                    filteredProjects = viewModel.filterProjects()
+                    viewModel.updateFilteringItems()
+                }
+            }
+            .onChange(of: viewModel.projects) {
+                withAnimation {
+                    filteredProjects = viewModel.filterProjects()
+                    viewModel.updateFilteringItems()
+                }
+            }
+            .onChange(of: viewModel.searchText) {
+                withAnimation {
+                    filteredProjects = viewModel.filterProjects()
+                }
             }
         }
     }
