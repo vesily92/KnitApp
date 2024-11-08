@@ -36,7 +36,7 @@ struct CounterPreviewCell: View {
     init(counter: Counter) {
         self.counter = counter
         
-        counterName = counter.name ?? ""
+        counterName = counter.name
         
         if let unwrappedAmount = counter.rowsAmount {
             rowsAmount = String(unwrappedAmount)

@@ -10,10 +10,18 @@ import Foundation
 actor ProjectProvider {
     
     private var projects = [
-        ProjectModel(name: "Sweater", counters: [Counter(name: "Sleeve", rowsAmount: 100, currentRow: 99)]),
-        ProjectModel(name: "Scarf", counters: [Counter(name: "Body", rowsAmount: 150, currentRow: 71)]),
-        ProjectModel(name: "Babushka square1", counters: [Counter(name: "", rowsAmount: 10, currentRow: 2)]),
-        ProjectModel(name: "Babushka square2", counters: [Counter(name: "main", rowsAmount: 10, currentRow: 10)]),
+        ProjectModel(name: "Sweater", counters: [Counter(name: "Sleeve", currentRow: 71, rowsAmount: 150)]),
+        ProjectModel(name: "Scarf", counters: [
+            Counter(name: "Body", currentRow: 71, rowsAmount: 150),
+            Counter(name: "untitled1", currentRow: 71, rowsAmount: 150),
+            Counter(name: "untitled 2", currentRow: 71, rowsAmount: 150),
+            Counter(name: "untitled", currentRow: 71, rowsAmount: 150),
+            Counter(name: "untitled 0", currentRow: 71, rowsAmount: 150),
+            Counter(name: "untitled 23", currentRow: 71, rowsAmount: 150),
+            Counter(name: "12untitled", currentRow: 71, rowsAmount: 150)
+        ]),
+        ProjectModel(name: "Babushka square1", counters: [Counter(name: "", currentRow: 71, rowsAmount: 150)]),
+        ProjectModel(name: "Babushka square2", counters: [Counter(name: "main", currentRow: 71, rowsAmount: 150)]),
         ProjectModel(name: "My favourite babushka square", counters: []),
     ]
     

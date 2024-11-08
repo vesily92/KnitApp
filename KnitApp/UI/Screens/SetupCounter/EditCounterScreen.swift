@@ -17,14 +17,8 @@ struct EditCounterScreen: View {
     @Binding var counter: Counter
     @Binding var project: ProjectModel
     
-    @State private var nameString: String
-    @State private var currentRowString: String
-    @State private var rowsAmountString: String
-    @State private var rowGoalIsOn: Bool
-    @State private var canSubmit: Bool = false
-    @State private var showAlert: Bool = false
+    @State private var viewModel: SetupCounterViewModel
     
-    private let rowAmount: Int
     private let origin: OriginView
     
     @Environment(\.dismiss) private var dismiss
@@ -34,39 +28,51 @@ struct EditCounterScreen: View {
         NavigationView {
             List {
                 Section {
-                    CustomTextField(text: $nameString, title: "Name")
-                        .onChange(of: nameString) {
-                            trackChanges()
-                        }
+                    CustomTextField(
+                        text: $viewModel.nameString,
+                        title: "Name"
+                    )
+                    .onChange(of: viewModel.nameString) {
+                        viewModel.trackChanges()
+                    }
                 }
                 Section {
-                    CustomTextField(text: $currentRowString, title: "Current row", inputType: .numeric)
-                        .onChange(of: currentRowString) {
-                            trackChanges()
-                            print(currentRowString)
-                        }
+                    CustomTextField(
+                        text: $viewModel.currentRowString,
+                        title: "Current row",
+                        inputType: .numeric
+                    )
+                    .onChange(of: viewModel.currentRowString) {
+                        viewModel.trackChanges()
+                    }
                 }
                 Section {
-                    Toggle(isOn: $rowGoalIsOn) {
+                    Toggle(isOn: $viewModel.rowGoalIsOn) {
                         Text("Row goal")
                     }
-                    .onChange(of: rowGoalIsOn) {
-                        trackChanges()
+                    .onChange(of: viewModel.rowGoalIsOn) {
+                        viewModel.trackChanges()
                     }
-                    if rowGoalIsOn {
-                        CustomTextField(text: $rowsAmountString, title: "Amount", inputType: .numeric)
-                            .onChange(of: rowsAmountString) {
-                                trackChanges()
-                            }
+                    if viewModel.rowGoalIsOn {
+                        CustomTextField(
+                            text: $viewModel.rowsAmountString,
+                            title: "Amount",
+                            inputType: .numeric
+                        )
+                        .onChange(of: viewModel.rowsAmountString) {
+                            viewModel.trackChanges()
+                        }
                     }
                 }
                 Section {
                     Button("Delete counter", role: .destructive) {
-                        showAlert = true
+                        viewModel.showAlert = true
                     }
-                    .alert("Are you sure you want to delete counter?", isPresented: $showAlert) {
+                    .alert("Are you sure you want to delete counter?", isPresented: $viewModel.showAlert) {
                         Button("Delete", role: .destructive) {
-                            deleteCounter()
+                            project.counters.remove(
+                                at: viewModel.getIndexToDelete()
+                            )
                             switch origin {
                             case .counterView:
                                 coordinator.pop(
@@ -91,77 +97,34 @@ struct EditCounterScreen: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Save") {
-                        counter = makeUpdatedCounter()
+                        counter = viewModel.makeUpdatedCounter()
                         dismiss()
                     }
-                    .disabled(!canSubmit)
+                    .disabled(!viewModel.canSubmit)
                 }
             }
         }
     }
     
-    init(counter: Binding<Counter>, project: Binding<ProjectModel>, origin: OriginView) {
+    init(
+        counter: Binding<Counter>,
+        project: Binding<ProjectModel>,
+        origin: OriginView
+    ) {
         self._counter = counter
         self._project = project
         self.origin = origin
         
-        nameString = counter.wrappedValue.name ?? ""
-        currentRowString = String(counter.wrappedValue.currentRow)
-        rowGoalIsOn = counter.wrappedValue.rowGoalIsOn
-        
-        if let unwrappedAmount = counter.wrappedValue.rowsAmount {
-            rowAmount = unwrappedAmount
-            rowsAmountString = String(unwrappedAmount)
-        } else {
-            rowAmount = 100
-            rowsAmountString = "100"
-        }
-    }
-    
-    private func trackChanges() {
-        let nameWasChanged = nameString != counter.name
-        let currentRowWasChanged = currentRowString != String(counter.currentRow)
-        let rowAmountWasChanged = rowsAmountString != String(rowAmount)
-        let currentRowInBounds = rowAmount >= Int(currentRowString) ?? rowAmount
-        let rowGoalIsOnWasChanged = rowGoalIsOn != counter.rowGoalIsOn
-        
-        let fieldsWereChanged = nameWasChanged
-        || currentRowWasChanged
-        || rowAmountWasChanged
-        || rowGoalIsOnWasChanged
-        
-        if fieldsWereChanged {
-            if rowGoalIsOn && currentRowInBounds {
-                canSubmit = true
-            } else if rowGoalIsOn == false {
-                canSubmit = true
-            } else {
-                canSubmit = false
-            }
-        } else {
-            canSubmit = false
-        }
-    }
-    
-    private func makeUpdatedCounter() -> Counter {
-        let name = nameString.isEmpty ? "Untitled" : nameString
-        return Counter(
-            name: name,
-            rowsAmount: rowGoalIsOn ? Int(rowsAmountString) : nil,
-            currentRow: self.counter.currentRow
+        viewModel = SetupCounterViewModel(
+            project: project.wrappedValue,
+            counter: counter.wrappedValue
         )
-    }
-    
-    private func deleteCounter() {
-        if let index = self.project.counters.firstIndex(where: {$0.id == counter.id }) {
-            project.counters.remove(at: index)
-        }
     }
 }
 
 #Preview {
     struct Preview: View {
-        @State private var counter = Counter(name: "Some name", rowsAmount: 100, currentRow: 20)
+        @State private var counter = Counter(name: "Some name", currentRow: 71, rowsAmount: 150)
         @State private var project = ProjectModel(name: "Ivan", counters: [])
         var body: some View {
             EditCounterScreen(counter: $counter, project: $project, origin: .counterView)

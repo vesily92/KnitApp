@@ -11,18 +11,18 @@ import Foundation
 final class Counter: Identifiable {
     
     let id = UUID()
-    var name: String?
-    var rowsAmount: Int?
+    var name: String
     var currentRow: Int = 0
+    var rowsAmount: Int?
     
     var rowGoalIsOn: Bool {
         rowsAmount != nil
     }
     
-    init(name: String? = nil, rowsAmount: Int? = nil, currentRow: Int = 0) {
+    init(name: String, currentRow: Int = 0, rowsAmount: Int? = nil) {
         self.name = name
-        self.rowsAmount = rowsAmount
         self.currentRow = currentRow
+        self.rowsAmount = rowsAmount
     }
 }
 

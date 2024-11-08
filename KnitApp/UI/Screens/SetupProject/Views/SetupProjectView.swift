@@ -23,7 +23,7 @@ struct SetupProjectView: View {
         }
         Section {
             ForEach($project.counters) { $counter in
-                LabeledContent(counter.name ?? "") {
+                LabeledContent(counter.name) {
                     HStack {
                         if project.withRowGoal {
                             Text(String(counter.rowsAmount!))

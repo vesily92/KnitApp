@@ -11,9 +11,7 @@ struct NewCounterScreen: View {
     
     @Binding var project: ProjectModel
     
-    @State private var counterName = ""
-    @State private var rowsAmount = ""
-    @State private var rowGoalIsOn = false
+    @State private var viewModel: SetupCounterViewModel
     
     @Environment(\.dismiss) private var dismiss
     
@@ -21,14 +19,21 @@ struct NewCounterScreen: View {
         NavigationView {
             List {
                 Section {
-                    CustomTextField(text: $counterName, title: "Name")
+                    CustomTextField(
+                        text: $viewModel.nameString,
+                        title: "Name"
+                    )
                 }
                 Section {
-                    Toggle(isOn: $rowGoalIsOn) {
+                    Toggle(isOn: $viewModel.rowGoalIsOn) {
                         Text("Row goal")
                     }
-                    if rowGoalIsOn {
-                        CustomTextField(text: $rowsAmount, title: "Amount", inputType: .numeric)
+                    if viewModel.rowGoalIsOn {
+                        CustomTextField(
+                            text: $viewModel.rowsAmountString,
+                            title: "Amount",
+                            inputType: .numeric
+                        )
                     }
                 }
             }
@@ -43,10 +48,7 @@ struct NewCounterScreen: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Create") {
-                        let name = counterName.isEmpty ? "Untitled" : counterName
-                        let counter = Counter(name: name, rowsAmount: Int(rowsAmount))
-                        project.counters.append(counter)
-                        
+                        project.counters.append(viewModel.createNewCounter())
                         dismiss()
                     }
                 }
@@ -56,6 +58,8 @@ struct NewCounterScreen: View {
     
     init(project: Binding<ProjectModel>) {
         self._project = project
+        
+        viewModel = SetupCounterViewModel(project: project.wrappedValue)
     }
 }
 

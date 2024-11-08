@@ -49,7 +49,7 @@ struct CounterScreen: View {
                 }
             }
         }
-        .navigationTitle(counter.name ?? "")
+        .navigationTitle(counter.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button("Edit") {
